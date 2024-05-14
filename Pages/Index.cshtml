@@ -1,49 +1,93 @@
-@page
-@model IndexModel
-@{    
-    ViewData["Title"] = "Home page";
-}
-
-<div class="text-center">
-    <div class="jumbotron">
-        <h1 class="display-4">🎉 Congratulations to Matthew Coleman! 🎉</h1>
-        <p class="lead">You've achieved PL500! Keep up the amazing work!</p>
-        <hr class="my-4">
-        <p>Explore the world of <a href="https://docs.microsoft.com/aspnet/core">ASP.NET Core</a> and unleash your potential.</p>
-        <div>Host operating system: @Model.OSVersion</div>
-    </div>
-    <div id="floatingImageContainer" style="position: relative;">
-        <img id="floatingImage" src="https://www.flexmind.co/wp-content/uploads/2022/09/Power-Automate-RPA-Developer-420x420-1.png" alt="boss man" style="max-width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-    </div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        var image = $('#floatingImage');
-        var container = $('#floatingImageContainer');
-        
-        var screenHeight = $(window).height();
-        var screenWidth = $(window).width();
-        
-        var bounceDistance = 50;
-        
-        function getRandomPosition() {
-            var top = Math.random() * (screenHeight - image.height());
-            var left = Math.random() * (screenWidth - image.width());
-            return { top: top, left: left };
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home page</title>
+    <style>
+        /* Shake animation */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            10%, 90% { transform: translateX(-10px); }
+            20%, 80% { transform: translateX(10px); }
+            30%, 50%, 70% { transform: translateX(-10px); }
+            40%, 60% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
         }
-        
-        function bounceImage() {
-            var position = getRandomPosition();
-            image.animate({
-                top: position.top,
-                left: position.left
-            }, 2000, 'swing', function() {
-                bounceImage();
-            });
+
+        /* Apply shake animation to the whole page */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
-        
-        bounceImage();
-    });
-</script>
+    </style>
+</head>
+<body>
+    <div class="text-center">
+        <div class="jumbotron">
+            <h1 class="display-4">🎉 Congratulations to Matthew Coleman! 🎉</h1>
+            <p class="lead">You've achieved PL500! Keep up the amazing work!</p>
+            <hr class="my-4">
+            <p>Explore the world of <a href="https://learn.microsoft.com/en-us/credentials/certifications/power-automate-rpa-developer-associate">POWER AUTOMATE</a> and unleash your POWER.</p>
+            <div>Host operating system: @Model.OSVersion</div>
+        </div>
+        <div id="floatingImageContainer" style="position: relative;">
+            <img id="floatingImage" src="https://www.flexmind.co/wp-content/uploads/2022/09/Power-Automate-RPA-Developer-420x420-1.png" alt="boss man" style="max-width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var image = $('#floatingImage');
+            var container = $('#floatingImageContainer');
+
+            var screenHeight = $(window).height();
+            var screenWidth = $(window).width();
+
+            var bounceDistance = 50;
+            var animationDuration = 1000; // Decreased animation duration for faster movement
+
+            function getRandomPosition() {
+                var top = Math.random() * (screenHeight - image.height());
+                var left = Math.random() * (screenWidth - image.width());
+                return { top: top, left: left };
+            }
+
+            function getRandomSize() {
+                var size = Math.random() * 100 + 100; // Random size between 100px and 200px
+                return size;
+            }
+
+            function bounceImage() {
+                var position = getRandomPosition();
+                var size = getRandomSize();
+                image.animate({
+                    top: position.top,
+                    left: position.left,
+                    width: size,
+                    height: size
+                }, animationDuration, 'swing', function() {
+                    bounceImage();
+                });
+            }
+
+            setTimeout(function() {
+                // Cool explosion effect here
+                image.stop(); // Stop the animation
+                image.attr('src', 'https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif'); // Change image to explosion GIF
+                image.css('max-width', '500px'); // Adjust the max-width for the explosion
+                image.css('left', '50%'); // Center the explosion horizontally
+                image.css('top', '50%'); // Center the explosion vertically
+                $('body').addClass('shake'); // Add shake class to the body
+            }, 7500); // 7.5 seconds
+
+            setTimeout(function() {
+                image.stop(); // Stop any ongoing animation
+                $('body').removeClass('shake'); // Remove shake class from the body
+            }, 10000); // 10 seconds
+
+            bounceImage(); // Start bouncing image
+        });
+    </script>
+</body>
+</html>
