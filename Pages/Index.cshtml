@@ -13,7 +13,7 @@
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">Matthew Flippings v1.0</h1>
+    <h1 class="display-4">Hello World from .NET 7</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <hr />
     <div>Host operating system: @Model.OSVersion</div>
@@ -29,7 +29,7 @@
         <p id="resultMessage"></p>
     </div>
 
-    <img id="coinImage" src="https://i.ibb.co/T4f35nc/matthew.png" alt="Coin" />
+    <img id="coinImage" src="https://i.ibb.co/9Gf0cxD/coin.png" alt="Coin" />
 </div>
 
 <script>
@@ -46,6 +46,7 @@
             // Rotate the coin
             coinImage.style.transform = "rotateY(360deg)";
 
+            // Wait for the animation to finish (1 second)
             setTimeout(function() {
                 var randomNumber = Math.random(); // Random number between 0 and 1
                 var result = (randomNumber < 0.5) ? "heads" : "tails";
@@ -55,7 +56,14 @@
                 } else {
                     resultMessage.innerHTML = "Sorry, you guessed incorrectly. The result was " + result + ".";
                 }
+
+                // Reset coin rotation after animation completes
+                setTimeout(function() {
+                    coinImage.style.transform = "rotateY(0deg)";
+                }, 1000); // Wait for the animation to finish (1 second)
+
             }, 1000); // Wait for the animation to finish (1 second)
+
         }, 50); // Small delay to ensure reset completes before flipping
     }
 </script>
