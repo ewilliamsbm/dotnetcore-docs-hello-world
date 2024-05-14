@@ -1,21 +1,23 @@
 @page
 @model IndexModel
-@{    
+@{
     ViewData["Title"] = "Home page";
 }
 
 <style>
-    .container {
-        position: relative;
-        width: 200px; /* Adjust width as needed */
-        height: 200px; /* Adjust height as needed */
-        background-color: #f0f0f0;
+    .game-board {
+        display: grid;
+        grid-template-columns: repeat(20, 20px); /* Adjust size as needed */
+        grid-template-rows: repeat(20, 20px); /* Adjust size as needed */
+        gap: 1px;
+        background-color: black;
     }
-    .icon {
-        position: absolute;
-        width: 100px; /* Adjust size as needed */
-        height: 100px; /* Adjust size as needed */
-        cursor: pointer;
+    .pacman, .monster {
+        width: 20px; /* Adjust size as needed */
+        height: 20px; /* Adjust size as needed */
+        background-image: url('https://i.ibb.co/T4f35nc/matthew.png');
+        background-size: cover;
+        transition: transform 0.1s;
     }
 </style>
 
@@ -25,32 +27,75 @@
     <hr />
     <div>Host operating system: @Model.OSVersion</div>
 
-    <div class="container" onmousedown="startDrag(event)" onmousemove="drag(event)" onmouseup="endDrag()">
-        <img id="icon" class="icon" src="https://i.ibb.co/T4f35nc/matthew.png" alt="Icon">
-    </div>
+    <div class="game-board" id="gameBoard"></div>
 </div>
 
 <script>
-    var isDragging = false;
-    var offsetX, offsetY;
+    // Pac-Man and Monster positions
+    var pacmanPosition = { x: 1, y: 1 };
+    var monsterPosition = { x: 18, y: 18 };
 
-    function startDrag(event) {
-        isDragging = true;
-        var icon = document.getElementById("icon");
-        var boundingRect = icon.getBoundingClientRect();
-        offsetX = event.clientX - boundingRect.left;
-        offsetY = event.clientY - boundingRect.top;
+    // Display Pac-Man and Monster on the game board
+    function displayCharacters() {
+        var gameBoard = document.getElementById("gameBoard");
+        gameBoard.innerHTML = "";
+
+        var pacmanElement = createCharacterElement(pacmanPosition, "pacman");
+        var monsterElement = createCharacterElement(monsterPosition, "monster");
+
+        gameBoard.appendChild(pacmanElement);
+        gameBoard.appendChild(monsterElement);
     }
 
-    function drag(event) {
-        if (isDragging) {
-            var icon = document.getElementById("icon");
-            icon.style.left = event.clientX - offsetX + "px";
-            icon.style.top = event.clientY - offsetY + "px";
+    // Create a character element at the specified position
+    function createCharacterElement(position, className) {
+        var element = document.createElement("div");
+        element.className = className;
+        element.style.gridColumn = position.x;
+        element.style.gridRow = position.y;
+        return element;
+    }
+
+    // Move Pac-Man and Monster
+    function moveCharacters(key) {
+        var dx = 0, dy = 0;
+
+        switch (key) {
+            case "ArrowUp":
+            case "w":
+                dy = -1;
+                break;
+            case "ArrowDown":
+            case "s":
+                dy = 1;
+                break;
+            case "ArrowLeft":
+            case "a":
+                dx = -1;
+                break;
+            case "ArrowRight":
+            case "d":
+                dx = 1;
+                break;
         }
+
+        // Update Pac-Man's position
+        pacmanPosition.x += dx;
+        pacmanPosition.y += dy;
+
+        // Update Monster's position (random movement)
+        monsterPosition.x += Math.floor(Math.random() * 3) - 1;
+        monsterPosition.y += Math.floor(Math.random() * 3) - 1;
+
+        // Redraw characters
+        displayCharacters();
     }
 
-    function endDrag() {
-        isDragging = false;
-    }
+    // Handle keyboard input
+    window.addEventListener("keydown", function(event) {
+        moveCharacters(event.key);
+    });
+
+    // Initial display
+    displayCharacters();
 </script>
