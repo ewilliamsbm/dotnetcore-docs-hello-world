@@ -1,62 +1,57 @@
-<%@ Page Language="C#" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="YourNamespace._Default" %>
+
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Understanding the Mastery of Microsoft PL-500 Certification</title>
-    <style>
-        /* Your CSS styles here */
-    </style>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Guess The Number</title>
+    <script runat="server">
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                // Generate a random number between 1 and 100
+                Random random = new Random();
+                int randomNumber = random.Next(1, 101);
+
+                // Store the random number in a session variable
+                Session["RandomNumber"] = randomNumber;
+            }
+        }
+
+        protected void btnGuess_Click(object sender, EventArgs e)
+        {
+            // Retrieve the random number from the session variable
+            int randomNumber = Convert.ToInt32(Session["RandomNumber"]);
+
+            // Get the user's guess
+            int userGuess = Convert.ToInt32(txtGuess.Text);
+
+            // Check if the guess is correct, too high, or too low
+            if (userGuess == randomNumber)
+            {
+                lblResult.Text = "Congratulations! You guessed the correct number.";
+            }
+            else if (userGuess < randomNumber)
+            {
+                lblResult.Text = "Too low! Try again.";
+            }
+            else
+            {
+                lblResult.Text = "Too high! Try again.";
+            }
+        }
+    </script>
 </head>
 <body>
-    <div class="container">
-        <h1>Unlocking the Mastery: Microsoft PL-500 Certification</h1>
-        <p>Welcome, esteemed learners and professionals, to this comprehensive exploration of the esteemed Microsoft PL-500 certification. Prepare to delve deep into the realms of Microsoft Power Platform and discover the mastery required to attain this prestigious certification.</p>
-        
-        <h2>The Essence of PL-500 Certification</h2>
-        <p>The Microsoft PL-500 certification is more than a mere validation of skills; it is a testament to mastery within the realm of Microsoft Power Platform solutions. At its core, PL-500 certification signifies a profound understanding of Power Platform architecture, components, and capabilities.</p>
-        <p>To achieve PL-500 certification, individuals must demonstrate expertise in architecting, implementing, and optimizing Power Platform solutions to address diverse business challenges. Mastery of PL-500 requires a deep understanding of data modeling, application development, workflow automation, integration, security, and compliance.</p>
-        
-        <h2>The Mastery Journey</h2>
-        <p>Embarking on the journey towards PL-500 certification is not for the faint of heart. It requires dedication, perseverance, and a thirst for knowledge. Let's delve into the key components of the PL-500 mastery journey:</p>
-        
-        <h3>1. Deep Dive into Power Platform Fundamentals</h3>
-        <p>The journey begins with a comprehensive exploration of Power Platform fundamentals. Individuals must develop a solid understanding of Power Apps, Power Automate, Power BI, and Power Virtual Agents. This foundational knowledge forms the bedrock upon which PL-500 mastery is built.</p>
-        
-        <h3>2. Architecting Robust Solutions</h3>
-        <p>PL-500 aspirants must hone their skills in architecting robust Power Platform solutions that meet the unique needs of organizations. This involves analyzing business requirements, designing data models, creating user interfaces, and orchestrating workflows to deliver seamless user experiences.</p>
-        
-        <h3>3. Mastering Application Development</h3>
-        <p>Application development is a cornerstone of PL-500 mastery. Individuals must master the art of building dynamic and user-friendly applications using Power Apps. This entails creating custom controls, implementing business logic, and ensuring accessibility and responsiveness across devices.</p>
-        
-        <h3>4. Automating Workflows with Precision</h3>
-        <p>Workflow automation is a critical aspect of PL-500 certification. Individuals must demonstrate proficiency in automating business processes using Power Automate. This involves designing automated workflows, integrating with external systems, and leveraging advanced functionalities such as approvals and conditions.</p>
-        
-        <h3>5. Seamless Integration Across Platforms</h3>
-        <p>Integration is key to unlocking the full potential of Power Platform solutions. PL-500 aspirants must master the art of integrating Power Platform with other Microsoft 365 services and external data sources. This involves leveraging connectors, APIs, and custom connectors to facilitate seamless data flow and interoperability.</p>
-        
-        <h3>6. Ensuring Security and Compliance</h3>
-        <p>Security and compliance are paramount in the realm of PL-500 certification. Individuals must demonstrate a deep understanding of security best practices and compliance requirements within the context of Power Platform solutions. This involves implementing role-based access control, data loss prevention policies, and regulatory compliance measures to safeguard sensitive information.</p>
-        
-        <h2>The Mastery in Practice</h2>
-        <p>Attaining PL-500 certification is not merely about passing exams; it is about applying knowledge and skills in real-world scenarios. Mastery is demonstrated through the ability to architect innovative solutions, automate complex workflows, integrate disparate systems, and ensure the security and compliance of Power Platform deployments.</p>
-        <p>PL-500 certified professionals are valued for their ability to drive digital transformation initiatives, optimize business processes, and empower organizations to achieve their goals. They are sought after for their expertise in leveraging the full capabilities of Microsoft Power Platform to deliver tangible business value.</p>
-        
-        <h2>Conclusion: Embracing the Journey of Mastery</h2>
-        <p>In conclusion, the Microsoft PL-500 certification represents more than just a validation of skills; it is a testament to mastery within the realm of Microsoft Power Platform solutions. Achieving PL-500 certification requires dedication, perseverance, and a commitment to continuous learning.</p>
-        <p>As you embark on your journey towards PL-500 mastery, remember that it is not a destination but a continuous process of growth and development. Embrace the challenges, celebrate the victories, and never stop striving for excellence.</p>
-        
-        <p>May your journey towards PL-500 certification be filled with discovery, enlightenment, and the joy of mastering new skills. Best of luck on your path to PL-500 mastery!</p>
-        
-        <a href="#" class="cta-button">Begin Your Mastery Journey</a>
-    </div>
-
-    <h2>Delving into Mastery</h2>
-    <p>Mastering the PL-500 certification demands an unwavering commitment to continuous improvement and lifelong learning. It requires individuals to delve deep into the intricacies of Microsoft Power Platform and emerge as true experts in their field.</p>
-    <p>At the heart of PL-500 mastery lies a passion for innovation, a thirst for knowledge, and a relentless pursuit of excellence. It is about pushing the boundaries of what is possible, exploring new horizons, and daring to dream big.</p>
-    <p>Those who embark on the journey towards PL-500 certification are not merely seeking a credential; they are striving for greatness. They understand that mastery is not an end goal but a continuous process of growth and development.</p>
-    <p>As they navigate the challenges and obstacles along the way, they emerge stronger, wiser, and more resilient. They embrace failure as an opportunity to learn, adapt, and grow. They celebrate their successes but never rest on their laurels, always pushing themselves to reach new heights.</p>
-    <p>PL-500 mastery is not confined to the realms of academia or the workplace; it transcends boundaries and permeates every aspect of life. It is a mindset, a way of being, a commitment to excellence in all endeavors.</p>
-    <p>So, as you embark on your journey towards PL-500 certification, remember that mastery is not a destination but a continuous journey. Embrace the challenges, embrace the opportunities, and embrace the joy of mastering new skills. The path may be long and arduous, but the rewards are truly limitless.</p>
-
+    <form id="form1" runat="server">
+        <div>
+            <h1>Guess The Number Game</h1>
+            <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
+            <br />
+            <asp:TextBox ID="txtGuess" runat="server"></asp:TextBox>
+            <asp:Button ID="btnGuess" runat="server" Text="Guess" OnClick="btnGuess_Click" />
+        </div>
+    </form>
 </body>
 </html>
