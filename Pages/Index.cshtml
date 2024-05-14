@@ -5,97 +5,65 @@
 }
 
 <style>
-    .game-board {
-        display: grid;
-        grid-template-columns: repeat(20, 20px); /* Adjust size as needed */
-        grid-template-rows: repeat(20, 20px); /* Adjust size as needed */
-        gap: 1px;
-        background-color: black;
-    }
-    .pacman, .monster {
-        width: 20px; /* Adjust size as needed */
-        height: 20px; /* Adjust size as needed */
-        background-image: url('https://i.ibb.co/T4f35nc/matthew.png');
-        background-size: cover;
-        transition: transform 0.1s;
+    #coinImage {
+        width: 100px; /* Adjust size as needed */
+        height: 100px; /* Adjust size as needed */
+        transition: transform 1s ease-in-out; /* Add animation transition */
     }
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">Matthew Pacmanner v1.0</h1>
+    <h1 class="display-4">Matthew flippings v1.0</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <hr />
     <div>Host operating system: @Model.OSVersion</div>
 
-    <div class="game-board" id="gameBoard"></div>
+    <h2>Heads or Tails Game</h2>
+    <div>
+        <p>Guess whether the result of flipping a coin will be heads or tails:</p>
+        <select id="guessInput">
+            <option value="heads">Heads</option>
+            <option value="tails">Tails</option>
+        </select>
+        <button onclick="flipCoin()">Flip Coin</button>
+        <p id="resultMessage"></p>
+    </div>
+
+    <img id="coinImage" src="https://i.ibb.co/T4f35nc/matthew.png" alt="Coin" />
 </div>
 
 <script>
-    // Pac-Man and Monster positions
-    var pacmanPosition = { x: 1, y: 1 };
-    var monsterPosition = { x: 18, y: 18 };
+    // Function to flip the coin and check the user's guess
+    function flipCoin() {
+        var coinImage = document.getElementById("coinImage");
+        var userGuess = document.getElementById("guessInput").value;
+        var resultMessage = document.getElementById("resultMessage");
 
-    // Display Pac-Man and Monster on the game board
-    function displayCharacters() {
-        var gameBoard = document.getElementById("gameBoard");
-        gameBoard.innerHTML = "";
+        // Reset coin rotation
+        coinImage.style.transform = "rotateY(0deg)";
 
-        var pacmanElement = createCharacterElement(pacmanPosition, "pacman");
-        var monsterElement = createCharacterElement(monsterPosition, "monster");
+        setTimeout(function() {
+            // Rotate the coin
+            coinImage.style.transform = "rotateY(360deg)";
 
-        gameBoard.appendChild(pacmanElement);
-        gameBoard.appendChild(monsterElement);
+            // Wait for the animation to finish (1 second)
+            setTimeout(function() {
+                var randomNumber = Math.random(); // Random number between 0 and 1
+                var result = (randomNumber < 0.5) ? "heads" : "tails";
+
+                if (userGuess === result) {
+                    resultMessage.innerHTML = "Congratulations! You guessed correctly. The result was " + result + ".";
+                } else {
+                    resultMessage.innerHTML = "Sorry, you guessed incorrectly. The result was " + result + ".";
+                }
+
+                // Reset coin rotation after animation completes
+                setTimeout(function() {
+                    coinImage.style.transform = "rotateY(0deg)";
+                }, 1000); // Wait for the animation to finish (1 second)
+
+            }, 1000); // Wait for the animation to finish (1 second)
+
+        }, 50); // Small delay to ensure reset completes before flipping
     }
-
-    // Create a character element at the specified position
-    function createCharacterElement(position, className) {
-        var element = document.createElement("div");
-        element.className = className;
-        element.style.gridColumn = position.x;
-        element.style.gridRow = position.y;
-        return element;
-    }
-
-    // Move Pac-Man and Monster
-    function moveCharacters(key) {
-        var dx = 0, dy = 0;
-
-        switch (key) {
-            case "ArrowUp":
-            case "w":
-                dy = -1;
-                break;
-            case "ArrowDown":
-            case "s":
-                dy = 1;
-                break;
-            case "ArrowLeft":
-            case "a":
-                dx = -1;
-                break;
-            case "ArrowRight":
-            case "d":
-                dx = 1;
-                break;
-        }
-
-        // Update Pac-Man's position
-        pacmanPosition.x += dx;
-        pacmanPosition.y += dy;
-
-        // Update Monster's position (random movement)
-        monsterPosition.x += Math.floor(Math.random() * 3) - 1;
-        monsterPosition.y += Math.floor(Math.random() * 3) - 1;
-
-        // Redraw characters
-        displayCharacters();
-    }
-
-    // Handle keyboard input
-    window.addEventListener("keydown", function(event) {
-        moveCharacters(event.key);
-    });
-
-    // Initial display
-    displayCharacters();
 </script>
