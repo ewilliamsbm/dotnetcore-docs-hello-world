@@ -12,11 +12,38 @@
         <p>Explore the world of <a href="https://docs.microsoft.com/aspnet/core">ASP.NET Core</a> and unleash your potential.</p>
         <div>Host operating system: @Model.OSVersion</div>
     </div>
-    <div class="card">
-        <img class="card-img-top" src="https://www.flexmind.co/wp-content/uploads/2022/09/Power-Automate-RPA-Developer-420x420-1.png" alt="boss man" style="max-width: 200px;">
-        <div class="card-body">
-            <h5 class="card-title">Meet the Boss</h5>
-            <p class="card-text">Your guide to success!</p>
-        </div>
+    <div id="floatingImageContainer" style="position: relative;">
+        <img id="floatingImage" src="https://www.flexmind.co/wp-content/uploads/2022/09/Power-Automate-RPA-Developer-420x420-1.png" alt="boss man" style="max-width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var image = $('#floatingImage');
+        var container = $('#floatingImageContainer');
+        
+        var screenHeight = $(window).height();
+        var screenWidth = $(window).width();
+        
+        var bounceDistance = 50;
+        
+        function getRandomPosition() {
+            var top = Math.random() * (screenHeight - image.height());
+            var left = Math.random() * (screenWidth - image.width());
+            return { top: top, left: left };
+        }
+        
+        function bounceImage() {
+            var position = getRandomPosition();
+            image.animate({
+                top: position.top,
+                left: position.left
+            }, 2000, 'swing', function() {
+                bounceImage();
+            });
+        }
+        
+        bounceImage();
+    });
+</script>
