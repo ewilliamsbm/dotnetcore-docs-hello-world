@@ -4,22 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home page</title>
-    <style>
-        /* Shake animation */
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            10%, 90% { transform: translateX(-10px); }
-            20%, 80% { transform: translateX(10px); }
-            30%, 50%, 70% { transform: translateX(-10px); }
-            40%, 60% { transform: translateX(10px); }
-            100% { transform: translateX(0); }
-        }
-
-        /* Apply shake animation to the whole page */
-        .shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
-    </style>
 </head>
 <body>
     <div class="text-center">
@@ -31,25 +15,27 @@
             <div>Host operating system: Windows</div> <!-- Replace with static content -->
         </div>
         <div id="floatingImageContainer" style="position: relative;">
-            <img id="floatingImage" src="https://www.flexmind.co/wp-content/uploads/2022/09/Power-Automate-RPA-Developer-420x420-1.png" alt="boss man" style="max-width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <img id="pl500Image" src="https://www.flexmind.co/wp-content/uploads/2022/09/Power-Automate-RPA-Developer-420x420-1.png" alt="PL500" style="max-width: 200px; position: absolute;">
+            <img id="germanFlag" src="https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png" alt="German Flag" style="max-width: 200px; position: absolute;">
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            var image = $('#floatingImage');
+            var pl500Image = $('#pl500Image');
+            var germanFlag = $('#germanFlag');
             var container = $('#floatingImageContainer');
 
             var screenHeight = $(window).height();
             var screenWidth = $(window).width();
 
             var bounceDistance = 50;
-            var animationDuration = 1000; // Decreased animation duration for faster movement
+            var animationDuration = 200; // Decreased animation duration for faster movement
 
             function getRandomPosition() {
-                var top = Math.random() * (screenHeight - image.height());
-                var left = Math.random() * (screenWidth - image.width());
+                var top = Math.random() * (screenHeight - pl500Image.height());
+                var left = Math.random() * (screenWidth - pl500Image.width());
                 return { top: top, left: left };
             }
 
@@ -58,7 +44,7 @@
                 return size;
             }
 
-            function bounceImage() {
+            function bounceImage(image) {
                 var position = getRandomPosition();
                 var size = getRandomSize();
                 image.animate({
@@ -67,26 +53,33 @@
                     width: size,
                     height: size
                 }, animationDuration, 'swing', function() {
-                    bounceImage();
+                    detectCollision();
+                    bounceImage(image);
                 });
             }
 
-            setTimeout(function() {
-                // Cool explosion effect here
-                image.stop(); // Stop the animation
-                image.attr('src', 'https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif'); // Change image to explosion GIF
-                image.css('max-width', '500px'); // Adjust the max-width for the explosion
-                image.css('left', '50%'); // Center the explosion horizontally
-                image.css('top', '50%'); // Center the explosion vertically
-                $('body').addClass('shake'); // Add shake class to the body
-            }, 7500); // 7.5 seconds
+            function detectCollision() {
+                var pl500Position = pl500Image.position();
+                var germanFlagPosition = germanFlag.position();
 
-            setTimeout(function() {
-                image.stop(); // Stop any ongoing animation
-                $('body').removeClass('shake'); // Remove shake class from the body
-            }, 10000); // 10 seconds
+                var pl500CenterX = pl500Position.left + pl500Image.width() / 2;
+                var pl500CenterY = pl500Position.top + pl500Image.height() / 2;
 
-            bounceImage(); // Start bouncing image
+                var germanFlagCenterX = germanFlagPosition.left + germanFlag.width() / 2;
+                var germanFlagCenterY = germanFlagPosition.top + germanFlag.height() / 2;
+
+                var distanceX = Math.abs(pl500CenterX - germanFlagCenterX);
+                var distanceY = Math.abs(pl500CenterY - germanFlagCenterY);
+
+                if (distanceX < (pl500Image.width() / 2 + germanFlag.width() / 2) && distanceY < (pl500Image.height() / 2 + germanFlag.height() / 2)) {
+                    // Collision detected
+                    pl500Image.stop().animate({ left: '-=50', top: '-=50' }, 100);
+                    germanFlag.stop().animate({ left: '+=50', top: '+=50' }, 100);
+                }
+            }
+
+            bounceImage(pl500Image); // Start bouncing PL500 image
+            bounceImage(germanFlag); // Start bouncing German flag image
         });
     </script>
 </body>
