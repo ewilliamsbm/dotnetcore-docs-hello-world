@@ -1,69 +1,56 @@
 @page
 @model IndexModel
-@{
+@{    
     ViewData["Title"] = "Home page";
 }
 
 <style>
-    #coinImage {
+    .container {
+        position: relative;
+        width: 100%;
+        height: 50vh; /* Adjust height as needed */
+        background-color: #f0f0f0;
+    }
+    .icon {
+        position: absolute;
         width: 100px; /* Adjust size as needed */
         height: 100px; /* Adjust size as needed */
-        transition: transform 1s ease-in-out; /* Add animation transition */
+        cursor: pointer;
     }
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">Matthew Flippings v1.0</h1>
+    <h1 class="display-4">Hello World from .NET 7</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <hr />
     <div>Host operating system: @Model.OSVersion</div>
 
-    <h2>Heads or Tails Game</h2>
-    <div>
-        <p>Guess whether the result of flipping a coin will be heads or tails:</p>
-        <select id="guessInput">
-            <option value="heads">Heads</option>
-            <option value="tails">Tails</option>
-        </select>
-        <button onclick="flipCoin()">Flip Coin</button>
-        <p id="resultMessage"></p>
+    <div class="container" onmousedown="startDrag(event)" onmousemove="drag(event)" onmouseup="endDrag()">
+        <img id="icon" class="icon" src="https://i.ibb.co/T4f35nc/matthew.png" alt="Icon">
     </div>
-
-    <img id="coinImage" src="https://i.ibb.co/T4f35nc/matthew.png" alt="Coin" />
 </div>
 
 <script>
-    // Function to flip the coin and check the user's guess
-    function flipCoin() {
-        var coinImage = document.getElementById("coinImage");
-        var userGuess = document.getElementById("guessInput").value;
-        var resultMessage = document.getElementById("resultMessage");
+    var isDragging = false;
+    var offsetX, offsetY;
 
-        // Reset coin rotation
-        coinImage.style.transform = "rotateY(0deg)";
+    function startDrag(event) {
+        isDragging = true;
+        var icon = document.getElementById("icon");
+        var boundingRect = icon.getBoundingClientRect();
+        offsetX = event.clientX - boundingRect.left;
+        offsetY = event.clientY - boundingRect.top;
+    }
 
-        setTimeout(function() {
-            // Rotate the coin
-            coinImage.style.transform = "rotateY(360deg)";
+    function drag(event) {
+        if (isDragging) {
+            var icon = document.getElementById("icon");
+            icon.style.left = event.clientX - offsetX + "px";
+            icon.style.top = event.clientY - offsetY + "px";
+        }
+    }
 
-            // Wait for the animation to finish (1 second)
-            setTimeout(function() {
-                var randomNumber = Math.random(); // Random number between 0 and 1
-                var result = (randomNumber < 0.5) ? "heads" : "tails";
-
-                if (userGuess === result) {
-                    resultMessage.innerHTML = "Congratulations! You guessed correctly. The result was " + result + ".";
-                } else {
-                    resultMessage.innerHTML = "Sorry, you guessed incorrectly. The result was " + result + ".";
-                }
-
-                // Reset coin rotation after animation completes
-                setTimeout(function() {
-                    coinImage.style.transform = "rotateY(0deg)";
-                }, 1000); // Wait for the animation to finish (1 second)
-
-            }, 1000); // Wait for the animation to finish (1 second)
-
-        }, 50); // Small delay to ensure reset completes before flipping
+    function endDrag() {
+        isDragging = false;
     }
 </script>
