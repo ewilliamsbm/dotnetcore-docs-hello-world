@@ -1,14 +1,22 @@
-﻿@page
+@page
 @model IndexModel
 @{    
     ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Adam and Dave in their hotel room at 2am after cutover has taken a U turn</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <hr />
-    <div>Host operating system: @Model.OSVersion</div>
-    <!-- Add your image here -->
-    <img src="https://i.pinimg.com/736x/ff/f7/5e/fff75ea0b6582280f4794f02d31fd88f.jpg" alt="barry white">
+    <div class="jumbotron">
+        <h1 class="display-4">🎉 Congratulations to Matthew Coleman! 🎉</h1>
+        <p class="lead">You've achieved PL500! Keep up the amazing work!</p>
+        <hr class="my-4">
+        <p>Explore the world of <a href="https://docs.microsoft.com/aspnet/core">ASP.NET Core</a> and unleash your potential.</p>
+        <div>Host operating system: @Model.OSVersion</div>
+    </div>
+    <div class="card">
+        <img class="card-img-top" src="https://www.flexmind.co/wp-content/uploads/2022/09/Power-Automate-RPA-Developer-420x420-1.png" alt="boss man">
+        <div class="card-body">
+            <h5 class="card-title">The man, the myth</h5>
+            <p class="card-text">The coleman!</p>
+        </div>
+    </div>
 </div>
