@@ -17,24 +17,20 @@
         background-image: url('https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Bliss_%28Windows_XP%29.png/270px-Bliss_%28Windows_XP%29.png');
         background-size: cover;
     }
-    #score {
+    .info {
         text-align: center;
         font-size: 24px;
         color: #fff;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
-    #title {
-        text-align: center;
-        font-size: 36px;
-        color: #fff;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        margin-bottom: 20px;
+    #score {
+        margin-top: 20px;
     }
 </style>
 
-<div id="title">FLAPPY COLEMAN</div>
+<div class="info" id="title">FLAPPY COLEMAN</div>
 <canvas id="gameCanvas" width="480" height="640"></canvas>
-<div id="score">Score: <span id="scoreValue">0</span></div>
+<div class="info" id="score">Score: <span id="scoreValue">0</span></div>
 
 <script>
     // Get the canvas element and its context
@@ -48,14 +44,14 @@
     };
     playerImg.src = "https://i.ibb.co/T4f35nc/matthew.png";
 
-    // Define pipe properties
-    var pipeGap = 200; // Gap between pipes
-    var minPipeHeight = 100; // Minimum height of pipe entrance
-    var pipeWidth = 50;
-    var pipes = [];
-    var pipeSpeed = 2;
-    var maxPipes = 3; // Maximum number of visible pipes
-    var pipeInterval = 120; // Interval between pipes
+    // Define player properties
+    var player = {
+        x: 50,
+        y: canvas.height / 2 - 25, // Center vertically
+        width: 50,
+        height: 50,
+        speedY: 0
+    };
 
     // Gravity
     var gravity = 0.5;
@@ -69,10 +65,21 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw player
-        ctx.drawImage(playerImg, 50, canvas.height / 2 - 25, 50, 50);
+        ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
 
-        // Draw pipes
-        // ...
+        // Apply gravity to player
+        player.speedY += gravity;
+        player.y += player.speedY;
+
+        // Keep player within canvas boundaries
+        if (player.y <= 0) {
+            player.y = 0;
+            player.speedY = 0;
+        }
+        if (player.y >= canvas.height - player.height) {
+            player.y = canvas.height - player.height;
+            player.speedY = 0;
+        }
 
         // Draw score
         ctx.fillStyle = "#ffffff";
@@ -85,4 +92,11 @@
 
     // Start the game loop
     draw();
+
+    // Add event listener for spacebar to make player jump
+    document.addEventListener("keydown", function (event) {
+        if (event.keyCode === 32) { // Spacebar key code
+            player.speedY = -8; // Adjust jump height as needed
+        }
+    });
 </script>
