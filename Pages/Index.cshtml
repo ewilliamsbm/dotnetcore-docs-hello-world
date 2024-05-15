@@ -16,8 +16,17 @@
         background-image: url('https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Bliss_%28Windows_XP%29.png/270px-Bliss_%28Windows_XP%29.png');
         background-size: cover;
     }
+    #score {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 24px;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
 </style>
 
+<span id="score">0</span>
 <canvas id="gameCanvas" width="480" height="640"></canvas>
 
 <script>
@@ -38,8 +47,18 @@
         speedY: 0
     };
 
+    // Define pipe properties
+    var pipeGap = 150; // Gap between pipes
+    var pipeWidth = 50;
+    var pipes = [];
+    var pipeSpeed = 2;
+    var pipeInterval = 120; // Interval between pipes
+
     // Gravity
     var gravity = 0.5;
+
+    // Score
+    var score = 0;
 
     // Define game loop function
     function draw() {
@@ -63,17 +82,69 @@
             player.speedY = 0;
         }
 
+        // Move pipes
+        for (var i = 0; i < pipes.length; i++) {
+            pipes[i].x -= pipeSpeed;
+
+            // Draw top pipe
+            ctx.fillStyle = "#5aa457"; // Green color
+            ctx.fillRect(pipes[i].x, 0, pipeWidth, pipes[i].topHeight);
+
+            // Draw bottom pipe
+            ctx.fillRect(pipes[i].x, pipes[i].bottomY, pipeWidth, canvas.height - pipes[i].bottomY);
+
+            // Check for collision with player
+            if (player.x + player.width > pipes[i].x && player.x < pipes[i].x + pipeWidth &&
+                (player.y < pipes[i].topHeight || player.y + player.height > pipes[i].bottomY)) {
+                // Collision detected, game over
+                resetGame();
+                return;
+            }
+
+            // Increment score when passing a pipe
+            if (player.x > pipes[i].x + pipeWidth && !pipes[i].passed) {
+                score++;
+                pipes[i].passed = true;
+                document.getElementById("score").innerText = score;
+            }
+        }
+
+        // Generate new pipes
+        if (frames % pipeInterval === 0) {
+            var topHeight = Math.floor(Math.random() * (canvas.height - pipeGap));
+            pipes.push({
+                x: canvas.width,
+                topHeight: topHeight,
+                bottomY: topHeight + pipeGap,
+                passed: false
+            });
+        }
+
+        // Remove off-screen pipes
+        if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
+            pipes.shift();
+        }
+
         // Request animation frame
         requestAnimationFrame(draw);
     }
 
     // Start the game loop
+    var frames = 0;
     draw();
 
     // Add event listener for spacebar to make player jump
     document.addEventListener("keydown", function (event) {
         if (event.keyCode === 32) { // Spacebar key code
-            player.speedY = -10; // Adjust jump height as needed
+            player.speedY = -8; // Adjust jump height as needed
         }
     });
+
+    // Reset game function
+    function resetGame() {
+        pipes = [];
+        score = 0;
+        document.getElementById("score").innerText = score;
+        player.y = canvas.height / 2 - 25;
+    }
 </script>
