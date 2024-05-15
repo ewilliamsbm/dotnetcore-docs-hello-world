@@ -1,7 +1,7 @@
 @page
 @model IndexModel
 @{    
-    ViewData["Title"] = "flappy coleman";
+    ViewData["Title"] = "Home page";
 }
 
 <style>
@@ -97,56 +97,3 @@
 
             // Check for collision with player
             if (player.x + player.width > pipes[i].x && player.x < pipes[i].x + pipeWidth &&
-                (player.y < pipes[i].topHeight || player.y + player.height > pipes[i].bottomY)) {
-                // Collision detected, game over
-                resetGame();
-                return;
-            }
-
-            // Increment score when passing a pipe
-            if (player.x > pipes[i].x + pipeWidth && !pipes[i].passed) {
-                score++;
-                pipes[i].passed = true;
-                document.getElementById("score").innerText = score;
-            }
-        }
-
-        // Generate new pipes
-        if (frames % pipeInterval === 0 && pipes.length < maxPipes) {
-            var topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - minPipeHeight)) + minPipeHeight;
-            pipes.push({
-                x: canvas.width,
-                topHeight: topHeight,
-                bottomY: topHeight + pipeGap,
-                passed: false
-            });
-        }
-
-        // Remove off-screen pipes
-        if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
-            pipes.shift();
-        }
-
-        // Request animation frame
-        requestAnimationFrame(draw);
-    }
-
-    // Start the game loop
-    var frames = 0;
-    draw();
-
-    // Add event listener for spacebar to make player jump
-    document.addEventListener("keydown", function (event) {
-        if (event.keyCode === 32) { // Spacebar key code
-            player.speedY = -8; // Adjust jump height as needed
-        }
-    });
-
-    // Reset game function
-    function resetGame() {
-        pipes = [];
-        score = 0;
-        document.getElementById("score").innerText = score;
-        player.y = canvas.height / 2 - 25;
-    }
-</script>
