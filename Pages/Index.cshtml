@@ -9,6 +9,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden; /* Prevent scrolling */
+        font-family: Arial, sans-serif;
     }
     canvas {
         display: block;
@@ -17,17 +18,23 @@
         background-size: cover;
     }
     #score {
-        position: absolute;
-        top: 10px;
-        left: 10px;
+        text-align: center;
         font-size: 24px;
         color: #fff;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
+    #title {
+        text-align: center;
+        font-size: 36px;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        margin-bottom: 20px;
+    }
 </style>
 
-<span id="score">0</span>
+<div id="title">FLAPPY COLEMAN</div>
 <canvas id="gameCanvas" width="480" height="640"></canvas>
+<div id="score">Score: <span id="scoreValue">0</span></div>
 
 <script>
     // Get the canvas element and its context
@@ -36,16 +43,10 @@
 
     // Define player image
     var playerImg = new Image();
-    playerImg.src = "https://i.ibb.co/T4f35nc/matthew.png";
-
-    // Define player properties
-    var player = {
-        x: 50,
-        y: canvas.height / 2 - 25, // Center vertically
-        width: 50,
-        height: 50,
-        speedY: 0
+    playerImg.onload = function () {
+        draw();
     };
+    playerImg.src = "https://i.ibb.co/T4f35nc/matthew.png";
 
     // Define pipe properties
     var pipeGap = 200; // Gap between pipes
@@ -68,32 +69,20 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw player
-        ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+        ctx.drawImage(playerImg, 50, canvas.height / 2 - 25, 50, 50);
 
-        // Apply gravity to player
-        player.speedY += gravity;
-        player.y += player.speedY;
+        // Draw pipes
+        // ...
 
-        // Keep player within canvas boundaries
-        if (player.y <= 0) {
-            player.y = 0;
-            player.speedY = 0;
-        }
-        if (player.y >= canvas.height - player.height) {
-            player.y = canvas.height - player.height;
-            player.speedY = 0;
-        }
+        // Draw score
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "24px Arial";
+        ctx.fillText("Score: " + score, 10, 30);
 
-        // Move pipes
-        for (var i = 0; i < pipes.length; i++) {
-            pipes[i].x -= pipeSpeed;
+        // Request animation frame
+        requestAnimationFrame(draw);
+    }
 
-            // Draw top pipe
-            ctx.fillStyle = "#5aa457"; // Green color
-            ctx.fillRect(pipes[i].x, 0, pipeWidth, pipes[i].topHeight);
-
-            // Draw bottom pipe
-            ctx.fillRect(pipes[i].x, pipes[i].bottomY, pipeWidth, canvas.height - pipes[i].bottomY);
-
-            // Check for collision with player
-            if (player.x + player.width > pipes[i].x && player.x < pipes[i].x + pipeWidth &&
+    // Start the game loop
+    draw();
+</script>
