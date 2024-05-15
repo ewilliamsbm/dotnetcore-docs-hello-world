@@ -53,6 +53,15 @@
         speedY: 0
     };
 
+    // Define pipe properties
+    var pipeGap = 200; // Gap between pipes
+    var pipeWidth = 50;
+    var pipes = [];
+    var pipeSpeed = 2;
+    var maxPipes = 3; // Maximum number of visible pipes
+    var pipeInterval = 120; // Interval between pipes
+    var lastPipeTime = 0;
+
     // Gravity
     var gravity = 0.5;
 
@@ -81,6 +90,41 @@
             player.speedY = 0;
         }
 
+        // Draw pipes
+        for (var i = 0; i < pipes.length; i++) {
+            var pipe = pipes[i];
+            ctx.fillStyle = "#008000";
+            ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
+            ctx.fillRect(pipe.x, pipe.top + pipeGap, pipeWidth, canvas.height - pipe.top - pipeGap);
+            pipe.x -= pipeSpeed;
+
+            // Check for collision
+            if (player.x < pipe.x + pipeWidth && player.x + player.width > pipe.x &&
+                (player.y < pipe.top || player.y + player.height > pipe.top + pipeGap)) {
+                gameOver();
+            }
+
+            // Increment score if player passes pipe
+            if (pipe.x + pipeWidth < player.x && !pipe.passed) {
+                pipe.passed = true;
+                score++;
+                document.getElementById("scoreValue").textContent = score;
+            }
+
+            // Remove pipes that are off-screen
+            if (pipe.x + pipeWidth < 0) {
+                pipes.splice(i, 1);
+                i--;
+            }
+        }
+
+        // Generate new pipes
+        if (Date.now() - lastPipeTime > pipeInterval) {
+            lastPipeTime = Date.now();
+            var pipeTopHeight = Math.floor(Math.random() * (canvas.height - pipeGap));
+            pipes.push({ x: canvas.width, top: pipeTopHeight, passed: false });
+        }
+
         // Draw score
         ctx.fillStyle = "#ffffff";
         ctx.font = "24px Arial";
@@ -99,4 +143,10 @@
             player.speedY = -8; // Adjust jump height as needed
         }
     });
+
+    // Game over function
+    function gameOver() {
+        alert("Game Over. Your score is: " + score);
+        location.reload(); // Reload the page to restart the game
+    }
 </script>
