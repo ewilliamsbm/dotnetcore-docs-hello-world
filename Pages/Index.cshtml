@@ -1,7 +1,7 @@
 @page
 @model IndexModel
 @{    
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "flappy coleman";
 }
 
 <style>
@@ -48,10 +48,12 @@
     };
 
     // Define pipe properties
-    var pipeGap = 150; // Gap between pipes
+    var pipeGap = 200; // Gap between pipes
+    var minPipeHeight = 100; // Minimum height of pipe entrance
     var pipeWidth = 50;
     var pipes = [];
     var pipeSpeed = 2;
+    var maxPipes = 3; // Maximum number of visible pipes
     var pipeInterval = 120; // Interval between pipes
 
     // Gravity
@@ -110,8 +112,8 @@
         }
 
         // Generate new pipes
-        if (frames % pipeInterval === 0) {
-            var topHeight = Math.floor(Math.random() * (canvas.height - pipeGap));
+        if (frames % pipeInterval === 0 && pipes.length < maxPipes) {
+            var topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - minPipeHeight)) + minPipeHeight;
             pipes.push({
                 x: canvas.width,
                 topHeight: topHeight,
