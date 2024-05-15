@@ -6,79 +6,74 @@
 
 <style>
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f4f4f4;
         margin: 0;
         padding: 0;
+        overflow: hidden; /* Prevent scrolling */
     }
-    .container {
-        width: 380px;
-        margin: 100px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .logo {
+    canvas {
         display: block;
-        margin: 0 auto 20px;
-        width: 150px;
-        height: auto;
-    }
-    h1 {
-        color: #0078d4;
-        font-size: 24px;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    h2 {
-        color: #333;
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
-    input[type="text"],
-    input[type="password"],
-    input[type="submit"] {
-        width: calc(100% - 22px);
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        box-sizing: border-box;
-    }
-    input[type="submit"] {
-        background-color: #0078d4;
-        color: #fff;
-        cursor: pointer;
-    }
-    input[type="submit"]:hover {
-        background-color: #005a9e;
-    }
-    .links {
-        text-align: center;
-        margin-top: 20px;
-    }
-    .links a {
-        color: #0078d4;
-        text-decoration: none;
-        margin: 0 10px;
+        margin: 0 auto;
+        background-image: url('https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Bliss_%28Windows_XP%29.png/270px-Bliss_%28Windows_XP%29.png');
+        background-size: cover;
     }
 </style>
 
-<div class="container">
-    <img src="https://i.ibb.co/dMp182S/microsoft-logo.png" alt="Microsoft Logo" class="logo">
-    <h1>Sign in to your account</h1>
-    <form action="https://example.com/login" method="post">
-        <h2>Email, phone, or CREDIT CARD NUMBER</h2>
-        <input type="text" name="email" placeholder="Enter your email, phone, or Skype">
-        <h2>Password</h2>
-        <input type="password" name="password" placeholder="Password">
-        <h2>Credit Card Number</h2>
-        <input type="text" name="creditCard" placeholder="Enter your credit card number">
-        <input type="submit" value="Sign In">
-    </form>
-    <div class="links">
-        <a href="#">Create one!</a> |
-        <a href="#">Forgot password?</a>
-    </div>
-</div>
+<canvas id="gameCanvas" width="480" height="640"></canvas>
+
+<script>
+    // Get the canvas element and its context
+    var canvas = document.getElementById("gameCanvas");
+    var ctx = canvas.getContext("2d");
+
+    // Define player image
+    var playerImg = new Image();
+    playerImg.src = "https://i.ibb.co/T4f35nc/matthew.png";
+
+    // Define player properties
+    var player = {
+        x: 50,
+        y: canvas.height / 2 - 25, // Center vertically
+        width: 50,
+        height: 50,
+        speedY: 0
+    };
+
+    // Gravity
+    var gravity = 0.5;
+
+    // Define game loop function
+    function draw() {
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw player
+        ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+
+        // Apply gravity to player
+        player.speedY += gravity;
+        player.y += player.speedY;
+
+        // Keep player within canvas boundaries
+        if (player.y <= 0) {
+            player.y = 0;
+            player.speedY = 0;
+        }
+        if (player.y >= canvas.height - player.height) {
+            player.y = canvas.height - player.height;
+            player.speedY = 0;
+        }
+
+        // Request animation frame
+        requestAnimationFrame(draw);
+    }
+
+    // Start the game loop
+    draw();
+
+    // Add event listener for spacebar to make player jump
+    document.addEventListener("keydown", function (event) {
+        if (event.keyCode === 32) { // Spacebar key code
+            player.speedY = -10; // Adjust jump height as needed
+        }
+    });
+</script>
