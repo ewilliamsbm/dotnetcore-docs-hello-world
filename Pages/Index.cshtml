@@ -5,65 +5,25 @@
 }
 
 <style>
-    #coinImage {
-        width: 100px; /* Adjust size as needed */
-        height: 100px; /* Adjust size as needed */
-        transition: transform 1s ease-in-out; /* Add animation transition */
+    .appreciation-container {
+        text-align: center;
+        margin-top: 50px;
+    }
+    .appreciation-image {
+        max-width: 100%;
+        height: auto;
     }
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">Matthew flippings v1.0</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Hello World from poplar cafe</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">beyond breakfast</a>.</p>
     <hr />
     <div>Host operating system: @Model.OSVersion</div>
-
-    <h2>Heads or Tails Game</h2>
-    <div>
-        <p>Guess whether the result of flipping a coin will be heads or tails:</p>
-        <select id="guessInput">
-            <option value="heads">Heads</option>
-            <option value="tails">Tails</option>
-        </select>
-        <button onclick="flipCoin()">Flip Coin</button>
-        <p id="resultMessage"></p>
-    </div>
-
-    <img id="coinImage" src="https://i.ibb.co/T4f35nc/matthew.png" alt="Coin" />
 </div>
 
-<script>
-    // Function to flip the coin and check the user's guess
-    function flipCoin() {
-        var coinImage = document.getElementById("coinImage");
-        var userGuess = document.getElementById("guessInput").value;
-        var resultMessage = document.getElementById("resultMessage");
-
-        // Reset coin rotation
-        coinImage.style.transform = "rotateY(0deg)";
-
-        setTimeout(function() {
-            // Rotate the coin
-            coinImage.style.transform = "rotateY(360deg)";
-
-            // Wait for the animation to finish (1 second)
-            setTimeout(function() {
-                var randomNumber = Math.random(); // Random number between 0 and 1
-                var result = (randomNumber < 0.5) ? "heads" : "tails";
-
-                if (userGuess === result) {
-                    resultMessage.innerHTML = "Congratulations! You guessed correctly. The result was " + result + ".";
-                } else {
-                    resultMessage.innerHTML = "Sorry, you guessed incorrectly. The result was " + result + ".";
-                }
-
-                // Reset coin rotation after animation completes
-                setTimeout(function() {
-                    coinImage.style.transform = "rotateY(0deg)";
-                }, 1000); // Wait for the animation to finish (1 second)
-
-            }, 1000); // Wait for the animation to finish (1 second)
-
-        }, 50); // Small delay to ensure reset completes before flipping
-    }
-</script>
+<div class="appreciation-container">
+    <h2>Happy Wednesday happy beyond breakfast day</h2>
+    <p>We appreciate the delicious meals provided by Beyond Breakfast. Their dedication to quality and taste is unmatched!</p>
+    <img class="appreciation-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Full_English_breakfast.jpg/220px-Full_English_breakfast.jpg" alt="Full English Breakfast">
+</div>
