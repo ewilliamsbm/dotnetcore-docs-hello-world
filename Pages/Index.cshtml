@@ -1,8 +1,130 @@
 @page
 @model IndexModel
-@{    
+@{
     ViewData["Title"] = "Home page";
 }
 
-<style>
-    body {
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"] - Coleman's Deadly Siege</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            text-align: center;
+            color: #fff;
+        }
+
+        #gameCanvas {
+            display: block;
+            margin: auto;
+            background: #222;
+            border: 2px solid #fff;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        #gameTitle {
+            font-size: 40px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameTitle">Coleman's Deadly Siege</div>
+    <div id="score">Score: 0</div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <script>
+        let canvas = document.getElementById("gameCanvas");
+        let ctx = canvas.getContext("2d");
+
+        let score = 0;
+        let targets = [];
+        let targetRadius = 20;
+        let targetSpeed = 2;
+        let spawnInterval = 2000;
+        let lastSpawnTime = Date.now();
+
+        function drawTarget(target) {
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, targetRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff0000";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function spawnTarget() {
+            let target = {
+                x: Math.random() * (canvas.width - 2 * targetRadius) + targetRadius,
+                y: -targetRadius
+            };
+            targets.push(target);
+        }
+
+        function updateTargets() {
+            let currentTime = Date.now();
+            if (currentTime - lastSpawnTime > spawnInterval) {
+                spawnTarget();
+                lastSpawnTime = currentTime;
+            }
+
+            for (let i = 0; i < targets.length; i++) {
+                targets[i].y += targetSpeed;
+                if (targets[i].y - targetRadius > canvas.height) {
+                    targets.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function drawTargets() {
+            for (let target of targets) {
+                drawTarget(target);
+            }
+        }
+
+        function checkHit(x, y) {
+            for (let i = 0; i < targets.length; i++) {
+                let dx = x - targets[i].x;
+                let dy = y - targets[i].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < targetRadius) {
+                    targets.splice(i, 1);
+                    score++;
+                    document.getElementById("score").innerText = "Score: " + score;
+                    return;
+                }
+            }
+        }
+
+        canvas.addEventListener("click", function (e) {
+            let rect = canvas.getBoundingClientRect();
+            let mouseX = e.clientX - rect.left;
+            let mouseY = e.clientY - rect.top;
+            checkHit(mouseX, mouseY);
+        });
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateTargets();
+            drawTargets();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
