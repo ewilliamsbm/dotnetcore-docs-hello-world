@@ -51,21 +51,21 @@
         let ctx = canvas.getContext("2d");
 
         let score = 0;
-        let moleWidth = 100;
-        let moleHeight = 100;
         let moles = [];
         let moleImage = new Image();
         moleImage.src = "https://i.ibb.co/8d2gTRR/matthew.png";
-        let moleAppearTime = 1000; // Time mole stays visible in ms
+        let maxMoleSize = 100;
+        let moleGrowTime = 500; // Time to grow in ms
+        let moleStayTime = 700; // Time mole stays visible in ms
         let moleInterval = 1500; // Time between moles appearing in ms
         let gameRunning = true;
 
         // Function to spawn a mole at a random position
         function spawnMole() {
             if (!gameRunning) return;
-            let x = Math.random() * (canvas.width - moleWidth);
-            let y = Math.random() * (canvas.height - moleHeight);
-            moles.push({ x: x, y: y, appearedAt: Date.now() });
+            let x = Math.random() * (canvas.width - maxMoleSize);
+            let y = Math.random() * (canvas.height - maxMoleSize);
+            moles.push({ x: x, y: y, size: 0, appearedAt: Date.now() });
 
             setTimeout(spawnMole, moleInterval);
         }
@@ -75,23 +75,36 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             let currentTime = Date.now();
             for (let i = 0; i < moles.length; i++) {
-                if (currentTime - moles[i].appearedAt < moleAppearTime) {
-                    ctx.drawImage(moleImage, moles[i].x, moles[i].y, moleWidth, moleHeight);
+                let mole = moles[i];
+                let timeElapsed = currentTime - mole.appearedAt;
+                
+                if (timeElapsed < moleGrowTime) {
+                    mole.size = maxMoleSize * (timeElapsed / moleGrowTime);
+                } else if (timeElapsed < moleStayTime) {
+                    mole.size = maxMoleSize;
                 } else {
                     moles.splice(i, 1);
                     i--;
+                    continue;
                 }
+
+                let moleX = mole.x + (maxMoleSize - mole.size) / 2;
+                let moleY = mole.y + (maxMoleSize - mole.size) / 2;
+                ctx.drawImage(moleImage, moleX, moleY, mole.size, mole.size);
             }
         }
 
         // Function to check if the mole was hit
         function checkHit(x, y) {
             for (let i = 0; i < moles.length; i++) {
+                let mole = moles[i];
+                let moleX = mole.x + (maxMoleSize - mole.size) / 2;
+                let moleY = mole.y + (maxMoleSize - mole.size) / 2;
                 if (
-                    x >= moles[i].x &&
-                    x <= moles[i].x + moleWidth &&
-                    y >= moles[i].y &&
-                    y <= moles[i].y + moleHeight
+                    x >= moleX &&
+                    x <= moleX + mole.size &&
+                    y >= moleY &&
+                    y <= moleY + mole.size
                 ) {
                     moles.splice(i, 1);
                     score++;
