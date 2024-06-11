@@ -53,9 +53,19 @@
         let score = 0;
         let targets = [];
         let targetRadius = 20;
-        let targetSpeed = 2;
+        let targetSpeed = 4; // Targets drop twice as fast
         let spawnInterval = 2000;
         let lastSpawnTime = Date.now();
+
+        let gun = new Image();
+        gun.src = "https://i.imgur.com/5KtUqFP.png"; // Hosted gun image
+        let gunFire = new Image();
+        gunFire.src = "https://i.imgur.com/1O8ZnZL.png"; // Hosted gun fire image
+        let gunWidth = 100;
+        let gunHeight = 50;
+        let gunX = canvas.width / 2 - gunWidth / 2;
+        let gunY = canvas.height - gunHeight - 20;
+        let firing = false;
 
         function drawTarget(target) {
             ctx.beginPath();
@@ -110,17 +120,38 @@
             }
         }
 
-        canvas.addEventListener("click", function (e) {
+        canvas.addEventListener("mousemove", function (e) {
             let rect = canvas.getBoundingClientRect();
             let mouseX = e.clientX - rect.left;
-            let mouseY = e.clientY - rect.top;
-            checkHit(mouseX, mouseY);
+            gunX = mouseX - gunWidth / 2;
         });
+
+        canvas.addEventListener("click", function (e) {
+            if (!firing) {
+                firing = true;
+                setTimeout(() => {
+                    firing = false;
+                }, 100);
+                let rect = canvas.getBoundingClientRect();
+                let mouseX = e.clientX - rect.left;
+                let mouseY = e.clientY - rect.top;
+                checkHit(mouseX, mouseY);
+            }
+        });
+
+        function drawGun() {
+            if (firing) {
+                ctx.drawImage(gunFire, gunX, gunY, gunWidth, gunHeight);
+            } else {
+                ctx.drawImage(gun, gunX, gunY, gunWidth, gunHeight);
+            }
+        }
 
         function gameLoop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             updateTargets();
             drawTargets();
+            drawGun();
             requestAnimationFrame(gameLoop);
         }
 
