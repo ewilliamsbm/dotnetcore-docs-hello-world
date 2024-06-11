@@ -7,10 +7,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@ViewData["Title"] - Coleman's Deadly Siege</title>
+    <title>@ViewData["Title"] - Whack-a-Coleman</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Comic Sans MS', sans-serif;
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -42,7 +42,7 @@
     </style>
 </head>
 <body>
-    <div id="gameTitle">Coleman's Deadly Siege</div>
+    <div id="gameTitle">Whack-a-Coleman</div>
     <div id="score">Score: 0</div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
 
@@ -51,68 +51,49 @@
         let ctx = canvas.getContext("2d");
 
         let score = 0;
-        let targets = [];
-        let targetRadius = 20;
-        let targetSpeed = 4; // Targets drop twice as fast
-        let spawnInterval = 2000;
-        let lastSpawnTime = Date.now();
+        let moleWidth = 100;
+        let moleHeight = 100;
+        let moles = [];
+        let moleImage = new Image();
+        moleImage.src = "https://i.ibb.co/8d2gTRR/matthew.png";
+        let moleAppearTime = 1000; // Time mole stays visible in ms
+        let moleInterval = 1500; // Time between moles appearing in ms
+        let gameRunning = true;
 
-        let gun = new Image();
-        gun.src = "https://i.ibb.co/kGQX8kK/nerf.png"; // Updated gun image link
-        let gunFire = new Image();
-        gunFire.src = "https://i.ibb.co/D4c6xNv/fire.png"; // Updated gun fire image link
-        let gunWidth = 100;
-        let gunHeight = 50;
-        let gunX = canvas.width / 2 - gunWidth / 2;
-        let gunY = canvas.height - gunHeight - 20;
-        let firing = false;
+        // Function to spawn a mole at a random position
+        function spawnMole() {
+            if (!gameRunning) return;
+            let x = Math.random() * (canvas.width - moleWidth);
+            let y = Math.random() * (canvas.height - moleHeight);
+            moles.push({ x: x, y: y, appearedAt: Date.now() });
 
-        function drawTarget(target) {
-            ctx.beginPath();
-            ctx.arc(target.x, target.y, targetRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#ff0000";
-            ctx.fill();
-            ctx.closePath();
+            setTimeout(spawnMole, moleInterval);
         }
 
-        function spawnTarget() {
-            let target = {
-                x: Math.random() * (canvas.width - 2 * targetRadius) + targetRadius,
-                y: -targetRadius
-            };
-            targets.push(target);
-        }
-
-        function updateTargets() {
+        // Function to draw all active moles
+        function drawMoles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             let currentTime = Date.now();
-            if (currentTime - lastSpawnTime > spawnInterval) {
-                spawnTarget();
-                lastSpawnTime = currentTime;
-            }
-
-            for (let i = 0; i < targets.length; i++) {
-                targets[i].y += targetSpeed;
-                if (targets[i].y - targetRadius > canvas.height) {
-                    targets.splice(i, 1);
+            for (let i = 0; i < moles.length; i++) {
+                if (currentTime - moles[i].appearedAt < moleAppearTime) {
+                    ctx.drawImage(moleImage, moles[i].x, moles[i].y, moleWidth, moleHeight);
+                } else {
+                    moles.splice(i, 1);
                     i--;
                 }
             }
         }
 
-        function drawTargets() {
-            for (let target of targets) {
-                drawTarget(target);
-            }
-        }
-
+        // Function to check if the mole was hit
         function checkHit(x, y) {
-            for (let i = 0; i < targets.length; i++) {
-                let dx = x - targets[i].x;
-                let dy = y - targets[i].y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < targetRadius) {
-                    targets.splice(i, 1);
+            for (let i = 0; i < moles.length; i++) {
+                if (
+                    x >= moles[i].x &&
+                    x <= moles[i].x + moleWidth &&
+                    y >= moles[i].y &&
+                    y <= moles[i].y + moleHeight
+                ) {
+                    moles.splice(i, 1);
                     score++;
                     document.getElementById("score").innerText = "Score: " + score;
                     return;
@@ -120,42 +101,33 @@
             }
         }
 
-        canvas.addEventListener("mousemove", function (e) {
+        canvas.addEventListener("click", function (e) {
             let rect = canvas.getBoundingClientRect();
             let mouseX = e.clientX - rect.left;
-            gunX = mouseX - gunWidth / 2;
+            let mouseY = e.clientY - rect.top;
+            checkHit(mouseX, mouseY);
         });
-
-        canvas.addEventListener("click", function (e) {
-            if (!firing) {
-                firing = true;
-                setTimeout(() => {
-                    firing = false;
-                }, 100);
-                let rect = canvas.getBoundingClientRect();
-                let mouseX = e.clientX - rect.left;
-                let mouseY = e.clientY - rect.top;
-                checkHit(mouseX, mouseY);
-            }
-        });
-
-        function drawGun() {
-            if (firing) {
-                ctx.drawImage(gunFire, gunX, gunY, gunWidth, gunHeight);
-            } else {
-                ctx.drawImage(gun, gunX, gunY, gunWidth, gunHeight);
-            }
-        }
 
         function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updateTargets();
-            drawTargets();
-            drawGun();
+            drawMoles();
             requestAnimationFrame(gameLoop);
         }
 
-        gameLoop();
+        function startGame() {
+            score = 0;
+            document.getElementById("score").innerText = "Score: " + score;
+            moles = [];
+            gameRunning = true;
+            spawnMole();
+            gameLoop();
+        }
+
+        function stopGame() {
+            gameRunning = false;
+        }
+
+        // Start the game
+        startGame();
     </script>
 </body>
 </html>
